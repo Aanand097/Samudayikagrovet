@@ -10,6 +10,8 @@ import { Product, Category, Variety } from "@/lib/types";
 import heroBg from "@/assets/hero-bg.jpg";
 import heroVet from "@/assets/hero-vet.jpg";
 import heroSeeds from "@/assets/hero-seeds.jpg";
+import aanandImg from "@/assets/aanand.jpg";
+import reejonImg from "@/assets/reejon.jpeg";
 
 /* ─── Navbar ─── */
 const Navbar = () => {
@@ -324,15 +326,15 @@ const AboutSection = () => {
         <div className="flex justify-center gap-8">
           {[
   {
-    name: "Aanand Kumar Mandal",
-    role: "Lead Developer, UI/UX Designer, Backend Developer",
-    image: "/images/aanand.jpg"
-  },
-  {
-    name: "Reejon Baruwal",
-    role: "Frontend Developer",
-    image: "/images/reejon.jpeg"
-  },
+  name: "Aanand Kumar Mandal",
+  role: "Lead Developer, UI/UX Designer, Backend Developer",
+  image: aanandImg
+},
+{
+  name: "Reejon Baruwal",
+  role: "Frontend Developer",
+  image: reejonImg
+},
 ]
           .map((dev, i) => (
             <motion.div
