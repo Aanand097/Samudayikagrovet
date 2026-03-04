@@ -326,12 +326,12 @@ const AboutSection = () => {
   {
     name: "Aanand Kumar Mandal",
     role: "Lead Developer, UI/UX Designer, Backend Developer",
-    image: "/public/images/aanand.jpg"
+    image: "/images/aanand.jpg"
   },
   {
     name: "Reejon Baruwal",
     role: "Frontend Developer",
-    image: "/public/images/reejon.jpeg"
+    image: "/images/reejon.jpeg"
   },
 ]
           .map((dev, i) => (
