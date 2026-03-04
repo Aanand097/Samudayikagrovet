@@ -9,11 +9,9 @@ export interface Variety {
 export interface Product {
   id: string;
   name: string;
-  category: "Agricultural" | "Veterinary";
-  image: string;
+  price: number;
   description: string;
-  varieties: Variety[];
-  createdAt: number;
+  image: string;
 }
 
 export type Category = "All" | "Agricultural" | "Veterinary";

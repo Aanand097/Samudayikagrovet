@@ -27,7 +27,9 @@ const [password, setPassword] = useState("");
   }
 }, [loggedIn]);
 const refresh = async () => {
-  const { data } = await supabase.from("products").select("*");
+const { data } = await supabase
+  .from("products")
+  .select("*");
   setProducts(data || []);
 };
 const handleLogout = () => {
@@ -48,14 +50,12 @@ const handleLogin = () => {
 
   const handleNew = () => {
     setEditing({
-      id: "",
-      name: "",
-      category: "Agricultural",
-      image: "",
-      description: "",
-      varieties: [{ id: generateId(), name: "", price: 0, stock: "In Stock" }],
-      createdAt: 0,
-    });
+  id: generateId(),
+  name: "",
+  price: 0,
+  description: "",
+  image: "",
+})
     setIsNew(true);
   };
 
@@ -347,7 +347,12 @@ interface ProductFormModalProps {
 }
 
 const ProductFormModal = ({ product, isNew, onSave, onClose }: ProductFormModalProps) => {
-  const [form, setForm] = useState<Product>({ ...product });
+const [form, setForm] = useState<Product>({
+  ...product,
+  varieties: product.varieties ?? [
+    { id: generateId(), name: "", price: 0, stock: "In Stock" }
+  ]
+});
   const fileRef = useRef<HTMLInputElement>(null);
 
   const updateField = (field: keyof Product, value: any) => {
@@ -493,7 +498,10 @@ const ProductFormModal = ({ product, isNew, onSave, onClose }: ProductFormModalP
                       type="number"
                       min="0"
                       value={v.price}
-                      onChange={(e) => updateVariety(i, "price", Number(e.target.value))}
+                      onChange={(e) => {
+  const value = e.target.value;
+  updateVariety(i, "price", value === "" ? 0 : Number(value));
+}}
                       className="w-full px-2.5 py-1.5 bg-card border border-border rounded-md text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                       required
                     />

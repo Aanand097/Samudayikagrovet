@@ -11,6 +11,7 @@ import heroVet from "@/assets/hero-vet.jpg";
 import heroSeeds from "@/assets/hero-seeds.jpg";
 import aanandImg from "@/assets/aanand.jpg";
 import reejonImg from "@/assets/reejon.jpeg";
+import { supabase } from "@/supabase";
 
 /* ─── Navbar ─── */
 const Navbar = () => {
@@ -181,9 +182,20 @@ interface ProductCardProps {
   product: Product;
   index: number;
 }
+const buildWhatsAppUrl = (
+  productName: string,
+  varietyName: string,
+  price: number
+) => {
+  const phone = "9779807387193"; // आफ्नो WhatsApp number राख
+  const message = `Hello, I want to buy:\n\nProduct: ${productName}\nVariety: ${varietyName}\nPrice: ${price}`;
 
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+};
 const ProductCard = ({ product, index }: ProductCardProps) => {
-  const [selectedVariety, setSelectedVariety] = useState<Variety>(product.varieties[0]);
+const [selectedVariety, setSelectedVariety] = useState<Variety | null>(
+  product.varieties.length > 0 ? product.varieties[0] : null
+);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const selectVariety = (v: Variety) => {
@@ -224,7 +236,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="w-full flex items-center justify-between px-3 py-2.5 bg-muted rounded-lg text-sm font-medium text-foreground hover:bg-muted/80 transition-colors"
           >
-            <span>{selectedVariety.name}</span>
+            <span>{selectedVariety?.name}</span>
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${selectedVariety.stock === "In Stock" ? "bg-success" : "bg-destructive"}`} />
               <motion.div animate={{ rotate: dropdownOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -461,9 +473,29 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const fetchProducts = async () => {
+  try {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("products")
+      .select("*");
+
+    if (error) {
+      console.log("Fetch Error:", error.message);
+      return;
+    }
+
+    setProducts(data || []);
+  } catch (err) {
+    console.log("Unexpected Error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
   useEffect(() => {
-  setProducts([]);
-  setLoading(false);
+  fetchProducts();
 }, []);
   const filtered = products.filter((p) => {
     const matchCat = category === "All" || p.category === category;
@@ -571,5 +603,6 @@ const Index = () => {
     </div>
   );
 };
+
 
 export default Index;
