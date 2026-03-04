@@ -1,3 +1,4 @@
+const generateId = () => crypto.randomUUID();
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,12 +12,14 @@ import { Product, Variety } from "@/lib/types";
 import AdminLogin from "@/components/AdminLogin";
 
 const AdminDashboard = () => {
-  const [loggedIn, setLoggedIn] = useState(isAdminLoggedIn());
   const [products, setProducts] = useState<Product[]>([]);
   const [editing, setEditing] = useState<Product | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<"products" | "dashboard">("dashboard");
   const [search, setSearch] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+const [username, setUsername] = useState("");
+const [password, setPassword] = useState("");
 
  useEffect(() => {
   if (loggedIn) {
@@ -27,10 +30,21 @@ const refresh = async () => {
   const { data } = await supabase.from("products").select("*");
   setProducts(data || []);
 };
-  const handleLogout = () => {
-    setAdminLoggedIn(false);
-    setLoggedIn(false);
-  };
+const handleLogout = () => {
+  setLoggedIn(false);
+  setUsername("");
+  setPassword("");
+};
+const handleLogin = () => {
+  if (
+    username === "reejonbaruwal" &&
+    password === "reejonbaruwal12345"
+  ) {
+    setLoggedIn(true);
+  } else {
+    alert("Invalid Username or Password");
+  }
+};
 
   const handleNew = () => {
     setEditing({
@@ -50,25 +64,25 @@ const refresh = async () => {
     setIsNew(false);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Delete this product?")) {
-      deleteProduct(id);
-      refresh();
-    }
-  };
-
-  const handleSave = (product: Product) => {
-    if (isNew) {
-      addProduct(product);
-    } else {
-      updateProduct(product.id, product);
-    }
-    setEditing(null);
-    setIsNew(false);
+  const handleDelete = async (id: string) => {
+  if (confirm("Delete this product?")) {
+    await supabase.from("products").delete().eq("id", id);
     refresh();
-  };
+  }
+};
 
-  if (!loggedIn) return <AdminLogin onLogin={() => setLoggedIn(true)} />;
+  const handleSave = async (product: Product) => {
+  if (isNew) {
+    await supabase.from("products").insert([product]);
+  } else {
+    await supabase.from("products").update(product).eq("id", product.id);
+  }
+
+  setEditing(null);
+  setIsNew(false);
+  refresh();
+};
+
 
   const filtered = products.filter(
     (p) =>
@@ -83,6 +97,41 @@ const refresh = async () => {
     inStock: products.reduce((acc, p) => acc + p.varieties.filter((v) => v.stock === "In Stock").length, 0),
     outOfStock: products.reduce((acc, p) => acc + p.varieties.filter((v) => v.stock === "Out of Stock").length, 0),
   };
+
+if (!loggedIn) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-xl shadow-md w-80">
+        <h2 className="text-xl font-bold text-center mb-4">
+          Admin Login
+        </h2>
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full border p-2 rounded mb-3"
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full border p-2 rounded mb-4"
+        />
+
+        <button
+          onClick={handleLogin}
+          className="w-full bg-green-600 text-white py-2 rounded hover:opacity-90"
+        >
+          Login
+        </button>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-background flex">
