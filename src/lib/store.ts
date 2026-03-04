@@ -4,7 +4,7 @@ const PRODUCTS_KEY = "agrovet_products";
 const ADMIN_KEY = "agrovet_admin";
 
 // Default admin credentials
-const DEFAULT_ADMIN = { username: "admin", password: "admin123" };
+const DEFAULT_ADMIN = { username: "reejonbaruwal", password: "reejonbaruwal12345" };
 
 // Seed data
 const SEED_PRODUCTS: Product[] = [
