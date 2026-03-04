@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lock, Leaf } from "lucide-react";
-import { adminLogin, setAdminLoggedIn } from "@/lib/store";
 
 interface AdminLoginProps {
   onLogin: () => void;
@@ -13,21 +12,20 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setTimeout(() => {
-      if (adminLogin(username, password)) {
-        setAdminLoggedIn(true);
-        onLogin();
-      } else {
-        setError("Invalid credentials. Try admin / admin123");
-      }
-      setLoading(false);
-    }, 500);
-  };
+ const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
+  // Simple login without store
+  if (username === "admin" && password === "admin123") {
+    onLogin();
+  } else {
+    setError("Invalid credentials. Try admin / admin123");
+  }
+
+  setLoading(false);
+};
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <motion.div

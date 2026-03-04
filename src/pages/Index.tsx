@@ -5,7 +5,6 @@ import {
   ChevronLeft, ChevronRight, MapPin, Phone, Mail, Clock, Users, Award, Truck, Heart
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getProducts, buildWhatsAppUrl } from "@/lib/store";
 import { Product, Category, Variety } from "@/lib/types";
 import heroBg from "@/assets/hero-bg.jpg";
 import heroVet from "@/assets/hero-vet.jpg";
@@ -463,13 +462,9 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setProducts(getProducts());
-      setLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
-
+  setProducts([]);
+  setLoading(false);
+}, []);
   const filtered = products.filter((p) => {
     const matchCat = category === "All" || p.category === category;
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase());

@@ -9,8 +9,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/supabase";
 import { Product, Variety } from "@/lib/types";
 import AdminLogin from "@/components/AdminLogin";
-const [loggedIn, setLoggedIn] = useState(false);
- 
+
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(isAdminLoggedIn());
   const [products, setProducts] = useState<Product[]>([]);
