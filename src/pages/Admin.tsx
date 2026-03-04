@@ -6,11 +6,11 @@ import {
   ShoppingBag, Tag
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getProducts, saveProducts, addProduct, updateProduct, deleteProduct, generateId, setAdminLoggedIn } from "@/lib/store";
+import { supabase } from "@/supabase";
 import { Product, Variety } from "@/lib/types";
 import AdminLogin from "@/components/AdminLogin";
-import { isAdminLoggedIn } from "@/lib/store";
-
+const [loggedIn, setLoggedIn] = useState(false);
+ 
 const AdminDashboard = () => {
   const [loggedIn, setLoggedIn] = useState(isAdminLoggedIn());
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,12 +19,15 @@ const AdminDashboard = () => {
   const [sidebarTab, setSidebarTab] = useState<"products" | "dashboard">("dashboard");
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    if (loggedIn) setProducts(getProducts());
-  }, [loggedIn]);
-
-  const refresh = () => setProducts(getProducts());
-
+ useEffect(() => {
+  if (loggedIn) {
+    refresh();
+  }
+}, [loggedIn]);
+const refresh = async () => {
+  const { data } = await supabase.from("products").select("*");
+  setProducts(data || []);
+};
   const handleLogout = () => {
     setAdminLoggedIn(false);
     setLoggedIn(false);
