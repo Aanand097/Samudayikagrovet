@@ -196,6 +196,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
 const [selectedVariety, setSelectedVariety] = useState<Variety | null>(
   product.varieties.length > 0 ? product.varieties[0] : null
 );
+const [expanded, setExpanded] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const selectVariety = (v: Variety) => {
@@ -227,9 +228,29 @@ const [selectedVariety, setSelectedVariety] = useState<Variety | null>(
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-display font-semibold text-lg text-card-foreground mb-1">{product.name}</h3>
-        <p className="text-muted-foreground text-sm mb-3 line-clamp-2 flex-1">{product.description}</p>
+  <h3 className="font-display font-semibold text-lg text-card-foreground mb-1">
+    {product.name}
+  </h3>
 
+  {/* 🔥 ADD THIS */}
+  <p className="text-lg font-bold text-primary mb-1">
+    Rs. {selectedVariety?.price}
+  </p>
+
+  <p className="text-muted-foreground text-sm mb-3 flex-1">
+  {expanded
+    ? product.description
+    : product.description.slice(0, 100) + "..."}
+
+  {product.description.length > 100 && (
+    <span
+      onClick={() => setExpanded(!expanded)}
+      className="text-blue-500 cursor-pointer ml-1"
+    >
+      {expanded ? " Less" : " More"}
+    </span>
+  )}
+</p>
         {/* Variety Selector */}
         <div className="relative mb-3">
           <button
