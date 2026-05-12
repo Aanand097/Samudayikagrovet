@@ -498,18 +498,32 @@ const Index = () => {
   try {
     setLoading(true);
 
+    const fetchProducts = async () => {
+  try {
+    setLoading(true);
+
     const { data, error } = await supabase
       .from("products")
-      .select("*");
+      .select(`
+        id,
+        name,
+        description,
+        category,
+        image,
+        varieties
+      `)
+      .limit(20);
 
     if (error) {
       console.log("Fetch Error:", error.message);
+      setProducts([]);
       return;
     }
 
     setProducts(data || []);
   } catch (err) {
     console.log("Unexpected Error:", err);
+    setProducts([]);
   } finally {
     setLoading(false);
   }
