@@ -494,11 +494,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const fetchProducts = async () => {
-  try {
-    setLoading(true);
-
-    const fetchProducts = async () => {
+ const fetchProducts = async () => {
   try {
     setLoading(true);
 
