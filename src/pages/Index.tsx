@@ -498,17 +498,16 @@ const Index = () => {
   try {
     setLoading(true);
 
-    const { data, error } = await supabase
-      .from("products")
-      .select(`
-        id,
-        name,
-        description,
-        category,
-        image,
-        varieties
-      `)
-      .limit(20);
+   const { data, error } = await supabase
+  .from("products")
+  .select(`
+    id,
+    name,
+    description,
+    category,
+    image
+  `)
+  .limit(20);
 
     if (error) {
       console.log("Fetch Error:", error.message);
