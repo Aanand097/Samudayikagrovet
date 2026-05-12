@@ -500,14 +500,8 @@ const Index = () => {
 
    const { data, error } = await supabase
   .from("products")
-  .select(`
-    id,
-    name,
-    description,
-    category,
-    image
-  `)
-  .limit(20);
+  .select("id,name,description,category,image")
+  .limit(10);
 
     if (error) {
       console.log("Fetch Error:", error.message);
@@ -515,7 +509,7 @@ const Index = () => {
       return;
     }
 
-    setProducts(data || []);
+    setProducts(data?.slice(0, 8) || []);
   } catch (err) {
     console.log("Unexpected Error:", err);
     setProducts([]);
