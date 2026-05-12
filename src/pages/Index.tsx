@@ -194,7 +194,7 @@ const buildWhatsAppUrl = (
 };
 const ProductCard = ({ product, index }: ProductCardProps) => {
 const [selectedVariety, setSelectedVariety] = useState<Variety | null>(
-  product.varieties.length > 0 ? product.varieties[0] : null
+  product.varieties?.length > 0 ? product.varieties[0] : null
 );
 const [expanded, setExpanded] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -257,9 +257,9 @@ const [expanded, setExpanded] = useState(false);
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="w-full flex items-center justify-between px-3 py-2.5 bg-muted rounded-lg text-sm font-medium text-foreground hover:bg-muted/80 transition-colors"
           >
-            <span>{selectedVariety?.name}</span>
+            <span>{selectedVariety?.name || "Select Variety"}</span>
             <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${selectedVariety.stock === "In Stock" ? "bg-success" : "bg-destructive"}`} />
+              <span className={`w-2 h-2 rounded-full ${selectedVariety?.stock === "In Stock" ? "bg-success" : "bg-destructive"}`} />
               <motion.div animate={{ rotate: dropdownOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
                 <ChevronDown className="w-4 h-4" />
               </motion.div>
@@ -274,11 +274,11 @@ const [expanded, setExpanded] = useState(false);
                 transition={{ duration: 0.15 }}
                 className="absolute z-20 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
               >
-                {product.varieties.map((v) => (
+                {product.varieties?.map((v) => (
                   <button
                     key={v.id}
                     onClick={() => selectVariety(v)}
-                    className={`w-full text-left px-3 py-2.5 text-sm hover:bg-muted transition-colors flex justify-between items-center ${v.id === selectedVariety.id ? "bg-primary/10 text-primary font-semibold" : "text-popover-foreground"}`}
+                    className={`w-full text-left px-3 py-2.5 text-sm hover:bg-muted transition-colors flex justify-between items-center ${v.id === selectedVariety?.id ? "bg-primary/10 text-primary font-semibold" : "text-popover-foreground"}`}
                   >
                     <span>{v.name}</span>
                     <span className={`w-2 h-2 rounded-full ${v.stock === "In Stock" ? "bg-success" : "bg-destructive"}`} />
@@ -291,15 +291,19 @@ const [expanded, setExpanded] = useState(false);
 
         {/* Stock status */}
         <div className="flex items-center justify-between mb-3">
-          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${selectedVariety.stock === "In Stock" ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"}`}>
-            {selectedVariety.stock}
+          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${selectedVariety?.stock === "In Stock" ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"}`}>
+            {selectedVariety?.stock}
           </span>
-          {selectedVariety.sku && <span className="text-xs text-muted-foreground">SKU: {selectedVariety.sku}</span>}
+          {selectedVariety?.sku && (
+  <span className="text-xs text-muted-foreground">
+    SKU: {selectedVariety.sku}
+  </span>
+)}
         </div>
 
         {/* WhatsApp Button */}
         <a
-          href={buildWhatsAppUrl(product.name, selectedVariety.name, selectedVariety.price)}
+          href={buildWhatsAppUrl(product.name, selectedVariety?.name, selectedVariety?.price)}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity text-sm"
@@ -315,7 +319,7 @@ const [expanded, setExpanded] = useState(false);
 const AboutSection = () => {
   const features = [
     { icon: <Award className="w-6 h-6" />, title: "10+ Years Experience", desc: "Serving farmers and animal owners with trusted, high-quality products." },
-    { icon: <Truck className="w-6 h-6" />, title: "Good Quality", desc: "Authorized " },
+    { icon: <Truck className="w-6 h-6" />, title: "Good Quality", desc: "Authorized quality products" },
     { icon: <Users className="w-6 h-6" />, title: "Expert Advice", desc: "Our trained staff provides guidance on product usage and dosage." },
     { icon: <Heart className="w-6 h-6" />, title: "Customer First", desc: "Your satisfaction and your animals' health are our top priorities." },
   ];
@@ -498,10 +502,10 @@ const Index = () => {
   try {
     setLoading(true);
 
-   const { data, error } = await supabase
-  .from("products")
-  .select("id,name,description,category,image")
-  .limit(10);
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .limit(10);
 
     if (error) {
       console.log("Fetch Error:", error.message);
@@ -509,7 +513,7 @@ const Index = () => {
       return;
     }
 
-    setProducts(data?.slice(0, 8) || []);
+    setProducts((data || []).slice(0, 8));
   } catch (err) {
     console.log("Unexpected Error:", err);
     setProducts([]);
